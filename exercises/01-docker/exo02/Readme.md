@@ -1,0 +1,1 @@
+# Aim : launch 1 container (symfony) and configure xdebug

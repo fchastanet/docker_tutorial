@@ -71,6 +71,22 @@ askYesNo() {
     done
 }
 
+askNumber() {
+    while true; do
+        read -p "$1 ? " -r
+        if [[ ${REPLY} =~ [0-9]+ ]]; then
+            echo ${REPLY}
+            return 0
+        elif [[ ${REPLY} =~ [xX] ]]; then
+            return 1
+        else
+            read -N 10000000 -t '0.01' ||true; # empty stdin in case of control characters
+            # \\r to go back to the beginning of the line
+            Log::displayError "\\r invalid answer                                                          "
+        fi
+    done
+}
+
 prompt() {
     local help="$1"
     local command="$2"
