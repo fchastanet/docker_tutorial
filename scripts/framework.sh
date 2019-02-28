@@ -17,7 +17,7 @@ openUrl() {
 
 removeAllContainers() {
     local containers="$(docker ps -aq)"
-    [[ ! -z "${containers}" ]] && docker rm "${containers}"
+    [[ ! -z "${containers}" ]] && docker rm -v "${containers}"
 }
 stopAllContainers() {
     local containers="$(docker ps -aq)"
@@ -112,8 +112,8 @@ launchExercice() {
 
     (
         cd $(dirname ${exoFile})
-        if [[ -f _exo.txt ]]; then
-            cat _exo.txt
+        if [[ -f _exo_title.txt ]]; then
+            cat _exo_title.txt
             echo
             pause
         fi

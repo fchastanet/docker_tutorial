@@ -22,10 +22,15 @@ chooseExercice() {
     for i in "${!exos[@]}"; do
         newBaseDir="$(dirname ${exos[$i]})"
         if [[ "${baseDir}" != "${newBaseDir}" ]]; then
+            echo
             echo "${newBaseDir}"
             baseDir="${newBaseDir}"
         fi
-        printf "\t$i) $(basename "${exos[$i]}")\n"
+        local exoTitle=""
+        if [[ -f "${exos[$i]}/_exo_title.txt" ]]; then
+            exoTitle=" - $(head -1 "${exos[$i]}/_exo_title.txt")"
+        fi
+        printf "\t$i) $(basename "${exos[$i]}") ${exoTitle}\n"
     done
 
     exoNumber=$(askNumber "Enter exercise number (x to exit)")

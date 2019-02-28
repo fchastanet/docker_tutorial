@@ -7,6 +7,7 @@
 # load framework
 CURRENT_DIR="$( cd "$( dirname ${BASH_SOURCE[0]})" && pwd )"
 BASE_DIR=$( cd "${CURRENT_DIR}/.." && pwd )
+
 # show the differences with the exo 1
 echo "Here the file differences with exo1"
 echo
