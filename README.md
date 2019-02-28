@@ -1,3 +1,3 @@
 # docker_tutorial
 
-# https://github.com/turkenh/ansible-interactive-tutorial
+some exercises on virtualization with docker, docker-compose, packer

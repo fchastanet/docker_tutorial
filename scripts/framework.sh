@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+
+# do not exit on error
+set +o errexit
+set +o pipefail
+
 let exoNumber=0
 
 declare -g thisCommand
@@ -7,18 +12,25 @@ trap 'previousCommand=$thisCommand; thisCommand=$BASH_COMMAND' DEBUG
 
 openUrl() {
     [[ -x ${BROWSER} ]] && "${BROWSER}" "$1"
-    path=$(which xdg-open || which gnome-open) && "$path" "$1"
+    path=$(which xdg-open 2>/dev/null || which gnome-open 2>/dev/null) && "$path" "$1" || echo "open manually the url '$1' in your browser"
 }
 
 removeAllContainers() {
-    docker rm $(docker ps -aq)
+    local containers="$(docker ps -aq)"
+    [[ ! -z "${containers}" ]] && docker rm "${containers}"
 }
 stopAllContainers() {
-    docker stop $(docker ps -aq)
+    local containers="$(docker ps -aq)"
+    [[ ! -z "${containers}" ]] && docker stop "${containers}"
 }
 cleanAllContainers() {
-    stopAllContainers
-    removeAllContainers
+    Log::displayInfo "check if containers are running ..."
+    local containers="$(docker ps -aq)"
+    if [[ ! -z "${containers}" ]] ; then
+        Log::displayInfo "cleaning containers ${containers}"
+        docker stop ${containers} 2>/dev/null >/dev/null
+        docker rm -v -l ${containers} 2>/dev/null >/dev/null
+    fi
 }
 
 # check colors applicable https://misc.flogisoft.com/bash/tip_colors_and_formatting
@@ -58,8 +70,9 @@ Log::displayMessage() {
 
 askYesNo() {
     while true; do
-        read -p "$1 (y or n)? " -n 1 -r
-        echo    # move to a new line
+        printf "$1 "
+        read -p "(y or n)? " -n 1 -r
+        clearLine
         case ${REPLY} in
             [yY]) return 0;;
             [nN]) return 1;;
@@ -87,17 +100,81 @@ askNumber() {
     done
 }
 
+
+launchExercice() {
+    local exoNumber="$1"
+    local exoFile="$2"
+
+    echo
+    echo "######################################################################################"
+    echo " EXERCISE ${exoNumber}" "${exoFile}"
+    echo "######################################################################################"
+
+    (
+        cd $(dirname ${exoFile})
+        if [[ -f _exo.txt ]]; then
+            cat _exo.txt
+            echo
+            pause
+        fi
+        source $(basename "${exoFile}")
+        [[ -f _exo_clean.sh ]] && source _exo_clean.sh
+    )
+
+    echo
+    echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+    echo " EXERCISE ${exoNumber}" "${exoFile} finished. Congratulations !"
+    echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+    pause
+}
+
+pause() {
+    local msg="${1:-press any key to continue ... }"
+    echo
+    read -p "${msg}" -n 1 -r
+    clearLine
+}
+
+clearLine() {
+    echo -e "\033[1K"
+}
+
 prompt() {
     local help="$1"
     local command="$2"
+    local additionalHelp="$3"
 
-    let exoNumber++
-    echo "#############################"
-    echo " EXERCISE ${exoNumber}"
-    echo "#############################"
+    echo
     echo "$help by running :"
-    echo "\$ ${command}"
-    if askYesNo "run it now"; then
-        eval "${command}"
+    echo
+    echo "        \$ ${command}"
+    echo
+    local msg=""
+    [[ ! -z "${additionalHelp}" ]] && msg+="${additionalHelp}\n"
+    msg+="run it now"
+    if askYesNo "${msg}"; then
+        (
+            set +o errexit
+            set +o pipefail
+            eval "${command}"
+        )
+        local ret=$?
+        if [[ "${ret}" != "0" ]]; then
+            echo "${output}"
+            echo
+            if askYesNo "the command has failed, do you want to retry"; then
+                prompt "${help}" "${command}"
+                return
+            fi
+        else
+            pause
+        fi
     fi
+    echo
+    echo "--------------------------------------------------------------------------------------"
+}
+
+
+Functions:isWindows() {
+    [[ "$(uname -o)" = "Msys" ]] && return 0 || return 1
 }

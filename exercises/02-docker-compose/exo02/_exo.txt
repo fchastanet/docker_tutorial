@@ -1,0 +1,12 @@
+# Aim : improve exercises/02-docker-compose/exo01
+
+phpmyadmin container:
+    - add some environment variables in order to be able to connect to mysql server
+
+Mysql server container:
+    - custom entrypoint in order to update /etc/my.cnf
+
+Php container:
+    - Dockerfile added gosu
+    - custom entrypoint to initialize symfony project
+    - code source is shared with the host
