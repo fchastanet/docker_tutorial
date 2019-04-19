@@ -2,10 +2,16 @@
 DOCKER_MINIMAL_VERSION="18.03"
 DOCKER_COMPOSE_MINIMAL_VERSION="1.21"
 PACKER_MINIMAL_VERSION="1.3.4"
+VAGRANT_MINIMAL_VERSION="2.2.3"
 
 # @return 1 if on windows system
 Functions::isWindows() {
     [[ "$(uname -o)" = "Msys" ]] && return 0 || return 1
+}
+
+# @return 1 if on xsl system
+Functions::isWsl() {
+    [[ "$(uname -r)" =~ .*-Microsoft$ ]] && return 0 || return 1
 }
 
 Functions::checkCommandExists() {
@@ -13,10 +19,7 @@ Functions::checkCommandExists() {
     local helpIfNotExists="$2"
 
     which ${commandName} > /dev/null 2>/dev/null && echo "${commandName} is installed" || {
-        echo "${commandName} is not installed, please install it"
-        if [[ ! -z "${helpIfNotExists}" ]]; then
-            Log::displayInfo "${helpIfNotExists}"
-        fi
+        echo "${commandName} is not installed, please install it. ${helpIfNotExists}"
         return 1
     }
     return 0
@@ -32,7 +35,9 @@ Version::checkMinimal() {
     local version
     version=$(${commandVersion} | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p')
 
-    Version::compare "${version}" "${minimalVersion}" || {
+    Version::compare "${version}" "${minimalVersion}" && {
+        echo "${commandName} version ${version} matches minimal required version"
+    } || {
         local result=$?
         if [[ "${result}" = "1" ]]; then
             echo "${commandName} version is ${version} greater than ${minimalVersion}, OK let's continue"
@@ -81,6 +86,8 @@ Version::compare() {
     return 0
 }
 
+echo "uname : " $(uname -a)
+
 # check docker version
 Version::checkMinimal "docker" "docker -v" "${DOCKER_MINIMAL_VERSION}"
 # check docker-compose version
@@ -88,9 +95,19 @@ Version::checkMinimal "docker-compose" "docker-compose -v" "${DOCKER_COMPOSE_MIN
 # check packer version
 Version::checkMinimal "packer" "packer --version" "${PACKER_MINIMAL_VERSION}"
 
-if [ "$(Functions::isWindows; echo $?)" = "1" ]; then
+if [ "$(Functions::isWindows; echo $?)" = "0" ]; then
+    # check vagrant version
+    Version::checkMinimal "vagrant" "vagrant --version" "${VAGRANT_MINIMAL_VERSION}"
+
     Functions::checkCommandExists "dos2unix" "are you using git bash ?"
     Functions::checkCommandExists "cygpath" "are you using git bash ?"
+    Functions::checkCommandExists "wsl" "you need to install wsl"
+elif [[ "$(Functions::isWsl; echo $?)" = "0" ]]; then
+    # check vagrant version
+    Version::checkMinimal "vagrant.exe" "vagrant.exe --version" "${VAGRANT_MINIMAL_VERSION}"
+else
+    # check vagrant version
+    Version::checkMinimal "vagrant" "vagrant --version" "${VAGRANT_MINIMAL_VERSION}"
 fi
 
 # pull docker images
@@ -106,13 +123,13 @@ declare -a images=(
 echo "pull docker images"
 for image in "${images[@]}"; do
     docker image pull "${image}"
-    docker image ls
+    docker image ls --filter "reference=${image}"
 done
 
-# pull packer images
+# TODO pull packer images
 
 # execute docker hello world
-if [[ "$( docker run --rm hello-world 2>/dev/null| grep "Hello from Docker!")" = "Hello from Docker!" ]]; then
+if [[ "$(docker run --rm hello-world 2>/dev/null| grep "Hello from Docker!")" = "Hello from Docker!" ]]; then
     echo "Docker Hello world works"
 else
     echo "Docker Hello world does not work"
