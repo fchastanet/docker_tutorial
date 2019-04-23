@@ -113,7 +113,7 @@ fi
 # pull docker images
 declare -a images=(
     "mysql"
-    "mysql:5.7"
+    "mysql:8.0"
     "debian:stretch"
     "php:7.2.3-fpm"
     "phpmyadmin/phpmyadmin"

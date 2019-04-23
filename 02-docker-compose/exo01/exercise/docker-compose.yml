@@ -1,12 +1,12 @@
 version: '3'
 services:
   apache:
-    build: .docker/apache
+    build: apache
     container_name: sf4_apache
     ports:
       - 80:80
     volumes:
-      - .docker/config/vhosts:/etc/apache2/sites-enabled
+      - ./config/vhosts:/etc/apache2/sites-enabled
       - web-site-volume:/home/wwwroot/sf4
     depends_on:
       - php
@@ -23,7 +23,7 @@ services:
       MYSQL_PASSWORD: sf4
 
   php:
-    build: .docker/php
+    build: php
     container_name: sf4_php
     volumes:
       - web-site-volume:/home/wwwroot/sf4

@@ -25,7 +25,10 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
     apt-get update &&\
     apt-get -y --no-install-recommends install \
         ca-certificates \
-        curl &&\
+        curl \
+        dirmngr \
+        gnupg2 \
+        gnupg2 &&\
     rm /bin/sh && ln -s /bin/bash /bin/sh &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
@@ -75,7 +78,7 @@ RUN true \
         git \
         gnupg \
         gnupg1 \
-        gnupg2
+        gnupg2 \
         locales \
         mailutils \
         subversion \

@@ -14,7 +14,7 @@ RUN true \
     && a2enmod \
         rewrite \
         proxy \
-        proxy_ajp
+        proxy_ajp \
         proxy_balancer \
         proxy_fcgi \
         proxy_http \
@@ -22,7 +22,7 @@ RUN true \
     \
     && mkdir -p "$HTTPD_PREFIX" \
     && chown www-data:www-data "$HTTPD_PREFIX" \
-    && sed -i -E '/^#Global configuration$/ServerName localhost/g' /etc/apache2/apache2.conf \
+    && sed -i -E 's/^#Global configuration$/ServerName localhost/g' /etc/apache2/apache2.conf \
     \
     # clean apt packages
     && apt-get -y clean \

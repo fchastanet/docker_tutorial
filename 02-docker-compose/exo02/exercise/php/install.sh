@@ -5,9 +5,7 @@
 if [[ ! -f /home/wwwroot/sf4/.gitignore ]]; then
     (
         cd /home/wwwroot/sf4
-        composer create-project symfony/skeleton my-temp-folder
-        cp -Rf /home/wwwroot/sf4/my-temp-folder/. .
-        rm -Rf /home/wwwroot/sf4/my-temp-folder
+        composer create-project symfony/skeleton .
         chown -R www-data:www-data *
     )
 fi
