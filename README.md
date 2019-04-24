@@ -15,4 +15,9 @@ now inspect logs file ot see if everything is correct
 Summary:
 * [docker command](01-docker/Readme.md)
 * [docker-composer command](02-docker-compose/exo01/Readme.md)
-s
+* [improve exo01 using entrypoint](02-docker-compose/exo02/Readme.md)
+* [improve exo02 add xdebug](02-docker-compose/exo03/Readme.md)
+
+TODO
+* see cow (Copy-On-Write) effect
+
