@@ -34,6 +34,7 @@ else
     echo "HOST_USER_ID=$(id -u)" > .env
     echo "HOST_GROUP_ID=$(id -g)" >> .env
 fi
+
 ```
 
 # Build the images

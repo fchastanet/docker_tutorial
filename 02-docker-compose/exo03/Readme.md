@@ -5,7 +5,23 @@ In this exercise, you will see:
   * add xdebug to php image
 
 # create .env file
-see [exo02 - create .env file](../exo02/Readme.md#create-env-file)
+execute this command in order to create .env file
+```bash
+# from directory exercise
+if [[ "$(uname -o)" = "Msys" ]]; then
+    # windows
+    echo "HOST_USER_ID=1000" > .env
+    echo "HOST_GROUP_ID=1000" >> .env
+else
+    # linux
+    echo "HOST_USER_ID=$(id -u)" > .env
+    echo "HOST_GROUP_ID=$(id -g)" >> .env
+fi
+echo "XDEBUG_ENABLED=1" >> .env
+echo "PROFILER_ENABLED=1" >> .env
+echo "TRACING_ENABLED=1" >> .env
+echo "XDEBUG_LOGS_ENABLED=1" >> .env
+```
 
 # Build the images
 rebuild php images
@@ -39,7 +55,7 @@ connect to the sf4_php container
 > just prepend winpty to the following command
 
 ```bash
-docker exec -it -u root sf4_php bash
+docker exec -it -u dev sf4_php bash
 ```
 
 you can see that symfony project has been already initialized by [php entrypoint](exercise/php/entrypoint.sh)

@@ -58,6 +58,8 @@ RUN \
 ###################################################################################
 #                               php                                               #
 ###################################################################################
+ARG PHP_VERSION=7.2.3
+# unfortunately specifying arg in from directive doesnot work correctly yet in docker 18.09
 FROM php:7.2.3-fpm
 
 # gosu command added via multi-stage builds
@@ -79,6 +81,8 @@ RUN true \
         gnupg \
         gnupg1 \
         gnupg2 \
+        iproute2 \
+        iputils-ping \
         locales \
         mailutils \
         subversion \
@@ -104,9 +108,9 @@ RUN true \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 # configure xdebug
+ADD https://raw.githubusercontent.com/php/php-src/PHP-${PHP_VERSION}/php.ini-development ${PHP_INI_DIR}/php.ini
 RUN \
-    pecl install xdebug-2.6.1 && docker-php-ext-enable xdebug \
-    echo 'zend_extension="/usr/local/lib/php/extensions/no-debug-non-zts-20180801/xdebug.so"' >> /usr/local/etc/php/7.2/php.ini
+    pecl install xdebug-2.6.1 && docker-php-ext-enable xdebug
 
 WORKDIR /home/dev/
 
@@ -114,4 +118,4 @@ EXPOSE 9000
 
 CMD ["php-fpm"]
 
-ENTRYPOINT ["custom-entrypoint"]
+ENTRYPOINT ["/usr/local/bin/custom-entrypoint"]
