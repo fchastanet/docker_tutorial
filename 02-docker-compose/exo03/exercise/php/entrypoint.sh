@@ -17,6 +17,14 @@ Configure::home() {
 
 Configure::home "/home/dev" "dev" "${HOST_USER_ID}" "dev" "${HOST_GROUP_ID}"
 
+DockerFunctions::getHostIp() {
+    readonly hostDomain="host.docker.internal"
+    local hostIp=$(ping ${hostDomain} -c 1 -s 16 2>/dev/null | grep -o '([^ ]*' | head -1 | tr -d '(44):\n') || $(echo '')
+    if [[ -z "${hostIp}" ]]; then
+      hostIp=$(/sbin/ip route|awk '/default/ { print $3 }')
+    fi
+    echo ${hostIp}
+}
 # dynamic configuration debug tools
 ConfigureApache::xDebug() {
     local xDebugIniFile="$1"
@@ -27,7 +35,7 @@ ConfigureApache::xDebug() {
     local logsPath="$6"
 
     rm -f "${xDebugIniFile}"
-
+    set -x
     if [[ "${xDebugEnabled}" = "1" ]]; then
         # get php extension dir
         local extDir
@@ -46,10 +54,10 @@ ConfigureApache::xDebug() {
         # even if the GET/POST/COOKIE variable was not present.
         # it can be useful to set it to 1 to debug automatically cli scripts
         # with PhpStorm use XDEBUG_CONFIG=idekey=PHPSTORM and PHP_IDE_CONFIG='serverName=localhost'to avoid setting this to 1
-        text+="xdebug.remote_autostart=0\n"
+        text+="xdebug.remote_autostart=1\n"
         text+="xdebug.remote_connect_back=0\n"
         #xdebug.remote_host not needed if xdebug.remote_connect_back
-        text+="xdebug.remote_host=0.0.0.0\n"
+        text+="xdebug.remote_host=$(DockerFunctions::getHostIp)\n"
         text+="xdebug.remote_port=9000\n"
         text+="xdebug.idekey=PHPSTORM\n"
         text+="xdebug.max_nesting_level=500\n"
@@ -80,10 +88,11 @@ ConfigureApache::xDebug() {
 
         printf "%b" "${text}" > "${xDebugIniFile}"
     fi
+    set +x
 }
 
 ConfigureApache::xDebug \
-    " /usr/local/etc/php/conf.d/xdebug.ini" \
+    "/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini" \
     "${XDEBUG_ENABLED}" \
     "${PROFILER_ENABLED}" \
     "${TRACING_ENABLED}" \
