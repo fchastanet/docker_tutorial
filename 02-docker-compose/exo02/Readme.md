@@ -17,10 +17,10 @@ here we are creating .env file
 all the variables defined in this file are available in the docker-compose.yml file
 and are passed to the container as environment variables via environment instruction
 
-    commands id -u and id -g gives current user/group id
-
-    under windows 1000 default value is used, the files shared between host and container
-    are world writable anyway, chmod on windows files has no effect
+> commands id -u and id -g gives current user/group id
+> 
+> under windows 1000 default value is used, the files shared between host and container
+> are world writable anyway, chmod on windows files has no effect
 
 execute this command in order to create .env file
 ```bash
@@ -37,7 +37,7 @@ fi
 ```
 
 # Build the images
-we will build apache and php containers
+we will build apache and php images
 and pull the images for phpmyadmin, mysql and maildev
 
 ```bash

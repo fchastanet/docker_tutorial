@@ -44,7 +44,7 @@ docker-compose logs -f
 connect to the sf4_php container
 > **Note**
 > On window git bash you will need to open tty (see [Previous tutorial](../../01-docker/Readme.md))
-> just prepend winpty to the following command
+> just prepend *winpty* to the following command
 
 ```bash
 docker exec -it -u root sf4_php bash

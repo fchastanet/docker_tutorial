@@ -10,8 +10,9 @@ in order to launch wordpress stack with apache and mysql
 launch a MySQL container from mysql 8.0 image
 * --rm option is used to remove the container once it terminates
 * -d option runs the container in background 
+* --default-authentication-plugin=mysql_native_password : MySQL 8 changed the password authentication method.
 ```bash
-docker run --rm --name wordpressMysql -e MYSQL_ROOT_PASSWORD=password -d mysql:8.0
+docker run --rm --name wordpressMysql -e MYSQL_ROOT_PASSWORD=password -d mysql:8.0 --default-authentication-plugin=mysql_native_password
 ```
 
 If you have netcat available on your host, you can use following script to wait 
@@ -39,14 +40,9 @@ docker logs wordpressMysql
 ### 1.2 Execute commands in running containers
 Docker exec is a commonly used CLI command that allows you to run a command within an existing running container.
 
-See the logs of the MySQL container (type Control-C to return to this tutorial)
-```bash
-docker logs -f wordpressMysql
-```
-
 Connect to MySQL container and show databases
 ```bash
-docker exec wordpressMysql sh -c 'exec mysql -uroot -ppassword -e \"SHOW DATABASES;\"'
+docker exec wordpressMysql sh -c "exec mysql -uroot -ppassword -e 'SHOW DATABASES;'"
 ```
 
 Launch bash on mysql container (type ls command, exit to leave bash session)
@@ -84,7 +80,7 @@ winpty docker exec -it wordpressMysql bash
 Launch Apache container from wordpress image linked to Mysql container previously created
 
 ```bash
-docker run --name wordpressApache -p 8080:80 --link wordpressMysql:mysql -d wordpress
+docker run --rm --name wordpressApache -p 8080:80 --link wordpressMysql:mysql -d wordpress
 ```
 
 See the logs of the Apache container  - type Control-C to interrupt
@@ -135,6 +131,10 @@ open wordpress [http://localhost:8080]
 ## Part 4 - clean everything
 
 ### kill all running docker containers
+> **WARNING**
+>
+> the following commands will terminate all your containers even those not related to this tutorial !!!
+ 
 ```bash
 docker stop $(docker ps -aq)
 ```
