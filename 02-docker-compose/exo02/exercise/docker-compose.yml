@@ -33,10 +33,11 @@ services:
     container_name: sf4_php
     volumes:
       - ./src:/home/wwwroot/sf4
-      - ././php/php.ini:/etc/php/7.2.3/php.ini
-      - ././php/php-fpm-pool.conf:/etc/php/7.2.3/pool.d/www.conf
-      - ././php/install.sh:/usr/local/bin/install.sh
-      - ././php/entrypoint.sh:/usr/local/bin/custom-entrypoint
+      - ./php/php.ini:/etc/php/7.2.3/php.ini
+      - ./php/php-fpm-pool.conf:/etc/php/7.2.3/pool.d/www.conf
+      - ./php/install.sh:/usr/local/bin/install.sh
+      - ./php/entrypoint.sh:/usr/local/bin/custom-entrypoint
+    working_dir: /home/wwwroot/sf4
     environment:
       maildev_host: sf4_maildev
       # pass .env variables to the container
