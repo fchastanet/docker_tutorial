@@ -19,7 +19,7 @@ Functions::checkCommandExists() {
     local helpIfNotExists="$2"
 
     which ${commandName} > /dev/null 2>/dev/null && echo "${commandName} is installed" || {
-        echo "${commandName} is not installed, please install it. ${helpIfNotExists}"
+        (>&2 echo "${commandName} is not installed, please install it. ${helpIfNotExists}")
         return 1
     }
     return 0
@@ -42,7 +42,7 @@ Version::checkMinimal() {
         if [[ "${result}" = "1" ]]; then
             echo "${commandName} version is ${version} greater than ${minimalVersion}, OK let's continue"
         elif [[ "${result}" = "2" ]]; then
-            echo "${commandName} minimal version is ${minimalVersion}, your version is ${version}"
+            (>&2 echo "${commandName} minimal version is ${minimalVersion}, your version is ${version}")
         fi
     }
 
@@ -123,7 +123,6 @@ declare -a images=(
 echo "pull docker images"
 for image in "${images[@]}"; do
     docker image pull "${image}"
-    docker image ls --filter "reference=${image}"
 done
 
 # TODO pull packer images
@@ -132,7 +131,7 @@ done
 if [[ "$(docker run --rm hello-world 2>/dev/null| grep "Hello from Docker!")" = "Hello from Docker!" ]]; then
     echo "Docker Hello world works"
 else
-    echo "Docker Hello world does not work"
+    (>&2 echo "Docker Hello world does not work")
 fi
 docker image rm hello-world 2>/dev/null >/dev/null
 # display images pulled
