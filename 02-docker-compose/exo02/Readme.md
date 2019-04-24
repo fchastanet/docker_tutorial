@@ -10,7 +10,7 @@ In this exercise, you will see:
 * Php container:
   * Dockerfile added gosu
   * custom entrypoint to initialize symfony project
-  * code source is shared with the host  
+  * code source is shared with the host and has user/group owner matching host user  
 
 # create .env file
 here we are creating .env file
