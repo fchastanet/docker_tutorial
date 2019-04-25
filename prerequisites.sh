@@ -33,7 +33,7 @@ Version::checkMinimal() {
     Functions::checkCommandExists "${commandName}" || return 1
 
     local version
-    version=$(${commandVersion} | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p')
+    version=$(${commandVersion} | sed -nrE 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p')
 
     Version::compare "${version}" "${minimalVersion}" && {
         echo "${commandName} version ${version} matches minimal required version"

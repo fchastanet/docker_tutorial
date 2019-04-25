@@ -12,7 +12,7 @@ In this exercise, you will see:
   * custom entrypoint to initialize symfony project
   * code source is shared with the host and has user/group owner matching host user  
 
-# create .env file
+## create .env file
 here we are creating .env file
 all the variables defined in this file are available in the docker-compose.yml file
 and are passed to the container as environment variables via environment instruction
@@ -34,10 +34,15 @@ else
     echo "HOST_USER_ID=$(id -u)" > .env
     echo "HOST_GROUP_ID=$(id -g)" >> .env
 fi
-
 ```
 
-# Build the images
+## See how docker-compose.yml is interpreted
+see how .env variables are replaced in docker-compose.yml
+```bash
+docker-compose config
+```
+
+## Build the images
 we will build apache and php images
 and pull the images for phpmyadmin, mysql and maildev
 
@@ -74,7 +79,7 @@ check the file [exercise/php/entrypoint.sh](exercise/php/entrypoint.sh)
 it allows to override the default /usr/local/bin/docker-php-entrypoint of the php image
 it is simply mounted via volume mapping inside docker-compose.yml
 
-# launch our containers
+## launch our containers
 now we will launch all the services defined in the docker-compose.yml file in background process (-d option)
 ```bash 
 docker-compose up -d
@@ -104,9 +109,8 @@ Open the web site in your browser [http://localhost](http://localhost)
 You should see a page with 'Welcome to Symfony 4.2.3'
 
 Open phpmyadmin [http://localhost:8080](http://localhost:8080)
-Notice that you can't authenticate to it using server/login/password mysql/sf4/sf4
+Notice that you can now authenticate to it using server/login/password mysql/sf4/sf4
 defined in the docker-compose.yml file
-we will see in the next exercise how to correct this 
 
 ## cleaning
 now remove the containers and the volumes associated (option -v)

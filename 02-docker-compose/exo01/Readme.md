@@ -40,6 +40,12 @@ Ctrl-C to go back to the bash prompt
 docker-compose logs -f
 ```
 
+inspect volume structure
+```bash
+docker volume inspect exercise_web-site-volume
+```
+you can see in the property Mountpoint the place where the files of the volume are actually stored
+
 ## initialize the symfony project
 connect to the sf4_php container
 > **Note**

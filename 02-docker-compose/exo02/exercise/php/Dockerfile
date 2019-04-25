@@ -101,7 +101,7 @@ RUN true \
     \
     # clean apt packages
     && apt-get -y clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 WORKDIR /home/dev/
 
