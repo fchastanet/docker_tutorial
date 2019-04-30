@@ -31,6 +31,28 @@ else
 fi
 ```
 
+In the case where netcat is not available on your system. Use one available in a linux image.
+So previous command is transformed into (note that it should work also on a system with nc available):
+```bash
+# create nc command as it was natively available on your system
+alias nc='docker run --rm --network=host subfuzion/netcat'
+(
+    wordpressMysqlIP="$(docker inspect --format='{{.NetworkSettings.IPAddress}}' wordpressMysql)"
+    if [[ "$?" != "0" ]]; then
+        echo "mysql container is not running"
+        exit
+    fi
+    echo "now we are waiting for mysql container to be ready ..."
+    until nc -w 1 -z ${wordpressMysqlIP} 3306
+    do
+        echo "waiting for mysql container..."
+        sleep 1
+    done
+    echo "mysql container is ready"    
+)
+unalias nc
+```
+
 Check logs of the container
 > Note that you can use the -f option to follow the logs
 ```bash
