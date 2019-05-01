@@ -88,7 +88,7 @@ RUN true \
         zip \
     \
     # gosu set-user-id mode in order to allow it to be executed in high priviledged mode
-    && chmod +s /usr/local/bin/gosu \
+    && chmod +xs /usr/local/bin/gosu \
     \
     # add a user 'dev', see entrypoint.sh to see how the mapping with the Host user id is made
     && groupadd dev -g 999 \

