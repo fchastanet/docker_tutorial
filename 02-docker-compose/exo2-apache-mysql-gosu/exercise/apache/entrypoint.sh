@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 
 # here the user is root
 # ensure dev user has the right user/group ids matching host user/group ids
@@ -23,5 +24,5 @@ chown dev:dev /home/wwwroot/sf4
 # initialize src the first time the container starts
 gosu dev /usr/local/bin/install.sh
 
-# finally call the original entrypoint
-source /usr/local/bin/docker-php-entrypoint
+# finally execute default command
+exec "$@"

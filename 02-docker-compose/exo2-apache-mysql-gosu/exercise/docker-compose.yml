@@ -7,15 +7,20 @@ services:
       - 80:80
     volumes:
       - ./src:/home/wwwroot/sf4
-      - ./config/vhosts:/etc/apache2/sites-enabled
-    depends_on:
-      - php
+      - ./apache/vhosts:/etc/apache2/sites-enabled
+      - ./apache/install.sh:/usr/local/bin/install.sh
+      - ./apache/entrypoint.sh:/usr/local/bin/custom-entrypoint
+    working_dir: /home/wwwroot/sf4
+    environment:
+      # pass .env variables to the container
+      HOST_USER_ID: ${HOST_USER_ID}
+      HOST_GROUP_ID: ${HOST_GROUP_ID}
     networks:
       - frontend
       - backend
 
   mysql:
-    image: mysql
+    image: mysql:8.0
     container_name: sf4_mysql
     volumes:
       - mysql-volume:/var/lib/mysql
@@ -25,26 +30,6 @@ services:
       MYSQL_DATABASE: sf4
       MYSQL_USER: sf4
       MYSQL_PASSWORD: sf4
-    networks:
-      - backend
-
-  php:
-    build: ./php
-    container_name: sf4_php
-    volumes:
-      - ./src:/home/wwwroot/sf4
-      - ./php/php.ini:/etc/php/7.2.3/php.ini
-      - ./php/php-fpm-pool.conf:/etc/php/7.2.3/pool.d/www.conf
-      - ./php/install.sh:/usr/local/bin/install.sh
-      - ./php/entrypoint.sh:/usr/local/bin/custom-entrypoint
-    working_dir: /home/wwwroot/sf4
-    environment:
-      maildev_host: sf4_maildev
-      # pass .env variables to the container
-      HOST_USER_ID: ${HOST_USER_ID}
-      HOST_GROUP_ID: ${HOST_GROUP_ID}
-    depends_on:
-      - mysql
     networks:
       - backend
 

@@ -1,16 +1,16 @@
 # improve exercises/02-docker-compose/exo01
   
 In this exercise, you will see:
+* Apache container:
+  * Dockerfile added gosu
+  * custom entrypoint to initialize symfony project
+  * code source is shared with the host and has user/group owner matching host user  
+
 * Phpmyadmin container:
   * add some environment variables in order to be able to connect to mysql server
 
 * Mysql server container:
   * custom entrypoint in order to update /etc/my.cnf
-
-* Php container:
-  * Dockerfile added gosu
-  * custom entrypoint to initialize symfony project
-  * code source is shared with the host and has user/group owner matching host user  
 
 ## create .env file
 here we are creating .env file
@@ -81,13 +81,11 @@ it is simply mounted via volume mapping inside docker-compose.yml
 
 ## launch our containers
 now we will launch all the services defined in the docker-compose.yml file in background process (-d option)
-```bash 
-docker-compose up -d
-```
 
-see the logs of the different services, Ctrl-C to go back to the tutorial
-```bash
-docker-compose logs -f
+and see the logs of the different services, Ctrl-C to go back to the tutorial
+
+```bash 
+docker-compose up -d && docker-compose logs -f
 ```
 
 ## initialize the symfony project
