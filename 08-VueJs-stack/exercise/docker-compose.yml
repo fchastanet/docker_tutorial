@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  client:
+    # TODO add code here
+
+  server:
+    # TODO add code here
+
+  networks:
+    - app-network

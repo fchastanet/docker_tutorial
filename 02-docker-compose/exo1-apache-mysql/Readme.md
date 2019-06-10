@@ -8,6 +8,8 @@ we will build apache image and pull the images for phpmyadmin and mysql
 
 during the build, analyse the content of the directory exercise
 ```bash
+# go to the exercise directory
+cd "${TUTO_BASE_DIR}/02-docker-compose/exo1-apache-mysql/exercise"
 # builds the images that need to be built
 docker-compose build 
 # pull (already built) images from official docker repository

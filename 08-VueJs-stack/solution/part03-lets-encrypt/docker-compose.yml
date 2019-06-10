@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  nodejs:
+    build: ./.docker/client
+    volumes:
+      - web-root:/data
+    networks:
+      - app-network
+
+  server:
+    image: nginx:mainline-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "${HOST_SERVER_HTTP_PORT}:80"
+      - "${HOST_SERVER_HTTPS_PORT}:443"
+    volumes:
+      - web-root:/data
+      - ./docker/server/nginx.conf:/etc/nginx/conf.d
+      # This will mount the relevant Let's Encrypt certificates and keys for our domain to the appropriate directory on the container.
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - dhparam:/etc/ssl/certs
+    depends_on:
+      - client
+    networks:
+      - app-network
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/data
+    depends_on:
+      - server
+    command: certonly --webroot --webroot-path=/data --email ${EMAIL} --agree-tos --no-eff-email --staging -d ${HOSTNAME} -d www.${HOSTNAME}
+
+volumes:
+  certbot-etc:
+  certbot-var:
+  web-root:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./src/client
+      o: bind
+  #  Diffie-Hellman key stored
+  dhparam:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./src/server/dhparam/
+      o: bind
+
+networks:
+  - app-network

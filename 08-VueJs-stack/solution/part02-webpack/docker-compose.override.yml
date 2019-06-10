@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  client:
+    volumes:
+      - node-modules:/data/node_modules
+
+volumes:
+  node-modules:

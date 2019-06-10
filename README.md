@@ -8,6 +8,7 @@ and will install some docker images
 `
 git clone git@github.com:fchastanet/docker_tutorial.git
 cd docker_tutorial
+export TUTO_BASE_DIR="$(pwd)"
 ./prerequisites.sh > logs
 `
 now inspect logs file ot see if everything is correct

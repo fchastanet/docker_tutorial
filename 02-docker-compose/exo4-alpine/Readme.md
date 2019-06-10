@@ -1,16 +1,16 @@
 # improve exercises/02-docker-compose/exo01
   
 In this exercise, you will see:
-* Apache container:
-  * Dockerfile added gosu
-  * custom entrypoint to initialize symfony project
-  * code source is shared with the host and has user/group owner matching host user  
-
 * Phpmyadmin container:
   * add some environment variables in order to be able to connect to mysql server
 
 * Mysql server container:
   * custom entrypoint in order to update /etc/my.cnf
+
+* Php container:
+  * Dockerfile added gosu
+  * custom entrypoint to initialize symfony project
+  * code source is shared with the host and has user/group owner matching host user  
 
 ## create .env file
 here we are creating .env file
@@ -25,7 +25,7 @@ and are passed to the container as environment variables via environment instruc
 execute this command in order to create .env file
 ```bash
 # go to the exercise directory
-cd "${TUTO_BASE_DIR}/02-docker-compose/exo2-apache-mysql-gosu/exercise"
+cd "${TUTO_BASE_DIR}/02-docker-compose/exo4-alpine/exercise"
 # create .env file
 if [[ "$(uname -o)" = "Msys" ]]; then
     # windows
@@ -83,11 +83,13 @@ it is simply mounted via volume mapping inside docker-compose.yml
 
 ## launch our containers
 now we will launch all the services defined in the docker-compose.yml file in background process (-d option)
-
-and see the logs of the different services, Ctrl-C to go back to the tutorial
-
 ```bash 
-docker-compose up -d && docker-compose logs -f
+docker-compose up -d
+```
+
+see the logs of the different services, Ctrl-C to go back to the tutorial
+```bash
+docker-compose logs -f
 ```
 
 ## initialize the symfony project
@@ -97,7 +99,7 @@ connect to the sf4_php container
 > just prepend winpty to the following command
 
 ```bash
-docker exec -it -u root sf4_apache bash
+docker exec -it -u root sf4_php bash
 ```
 
 you can see that symfony project has been already initialized by [php entrypoint](exercise/php/entrypoint.sh)
