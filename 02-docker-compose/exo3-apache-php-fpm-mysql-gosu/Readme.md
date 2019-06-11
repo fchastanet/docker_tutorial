@@ -119,7 +119,3 @@ now remove the containers and the volumes associated (option -v)
 ```bash
 docker-compose down -v
 ```
-
-TODO simplify remove php-fpm
-TODO problem with phpmyadmin grant user
-ALTER USER 'mysqlUsername'@'localhost' IDENTIFIED WITH mysql_native_password BY 'mysqlUsernamePassword';
