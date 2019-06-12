@@ -121,7 +121,7 @@ Finally type 'exit' to return to the host
 
 ## open the web sites
 Open the web site in your browser [http://localhost](http://localhost)
-You should see a page with 'Welcome to Symfony 4.2.3'
+You should see the `php information` page
 
 Open phpmyadmin [http://localhost:8080](http://localhost:8080)
 Notice that you can now authenticate to it using server/login/password mysql/sf4/sf4

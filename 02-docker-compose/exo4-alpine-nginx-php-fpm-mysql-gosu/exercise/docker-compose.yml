@@ -1,0 +1,35 @@
+version: '3'
+services:
+  web:
+    image: nginx:stable-alpine
+    container_name: sf4_web
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/site.conf:/etc/nginx/conf.d/default.conf
+      - ./src:/code
+    # depends_on import here, so the php port will be available when nginx will start
+    depends_on:
+      - php
+    networks:
+      - frontend
+      - backend
+
+  php:
+    build: ./php
+    container_name: sf4_php
+    volumes:
+      - ./src:/code
+      - ./php/install.sh:/usr/local/bin/install.sh
+      - ./php/entrypoint.sh:/usr/local/bin/custom-entrypoint
+    working_dir: /code
+    environment:
+      # pass .env variables to the container
+      HOST_USER_ID: ${HOST_USER_ID}
+      HOST_GROUP_ID: ${HOST_GROUP_ID}
+    networks:
+      - backend
+
+networks:
+  frontend:
+  backend:

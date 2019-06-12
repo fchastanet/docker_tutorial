@@ -1,11 +1,10 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # here the user is dev, because it has been launched with gosu from entrypoint
 
-if [[ ! -f /home/wwwroot/sf4/.gitignore ]]; then
+if [[ ! -f /code/.gitignore ]]; then
     (
-        cd /home/wwwroot/sf4
+        cd /code
         composer create-project symfony/skeleton .
-        chown -R www-data:www-data *
     )
 fi
