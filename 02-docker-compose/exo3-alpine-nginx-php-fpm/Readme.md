@@ -105,20 +105,6 @@ see the logs of the different services, Ctrl-C to go back to the tutorial
 docker-compose logs -f
 ```
 
-## initialize the symfony project
-connect to the sf4_php container
-> **Note**
-> On window git bash you will need to open tty (see [Previous tutorial](../../01-docker/Readme.md))
-> just prepend winpty to the following command
-
-```bash
-docker exec -it -u root sf4_php bash
-```
-
-you can see that symfony project has been already initialized by [php entrypoint](exercise/php/entrypoint.sh)
-
-Finally type 'exit' to return to the host
-
 ## open the web sites
 Open the web site in your browser [http://localhost](http://localhost)
 You should see the `php information` page
