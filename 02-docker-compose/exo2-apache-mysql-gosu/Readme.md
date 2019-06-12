@@ -1,4 +1,4 @@
-# improve exercises/02-docker-compose/exo01
+# improve 02-docker-compose/exo1-apache-mysql/exercise
   
 In this exercise, you will see:
 * Apache container:
@@ -10,7 +10,7 @@ In this exercise, you will see:
   * add some environment variables in order to be able to connect to mysql server
 
 * Mysql server container:
-  * custom entrypoint in order to update /etc/my.cnf
+  * custom command
 
 ## create .env file
 here we are creating .env file
@@ -57,29 +57,20 @@ during the build, inspect the differences with the exo 1 using a diff viewer
 check the file [exercise/apache/Dockerfile](exercise/apache/Dockerfile)
 and notice how it has been reworked
  * group of all the commands in one layer to avoid cache effect
- * cleaning at the end of the layer to reduce image size
- * one apt package by line and sorted alphabetically for easier merging
- * same best practice for apache module (a2enmod command)
-
-check the file [exercise/php/Dockerfile](exercise/php/Dockerfile)
-and notice how it has been reworked
- * group of all the commands in one layer to avoid cache effect
  * gosu command added via multi-stage builds
  * composer command added via official composer image
  * cleaning at the end of the layer to reduce image size
  * one apt package by line and sorted alphabetically for easier merging
  * note that there is too much apt packages and some of them could be removed (to be analysed)
+ * same best practice for apache module (a2enmod command)
+ * cleaning at the end of the layer to reduce image size
  * cleaning packages in the same layer, otherwise it doesn't clean anything
  * custom entrypoint configuration
- * files .docker/php/php.ini and .docker/php/php-fpm-pool.conf are simply mounted via
-      volume mapping inside docker-compose.yml instead of being copied via image building
-      it allows you to modify these files without the need of rebuilding the image
-      moreover in the first version, the COPY instruction was before some layers, if it was updated
-      the subsequent layers would have been invalidated and rebuilt
 
-check the file [exercise/php/entrypoint.sh](exercise/php/entrypoint.sh)
+check the file [exercise/apache/entrypoint.sh](exercise/php/entrypoint.sh)
 it allows to override the default /usr/local/bin/docker-php-entrypoint of the php image
 it is simply mounted via volume mapping inside docker-compose.yml
+and it uses `install.sh` file to initialize source code
 
 ## launch our containers
 now we will launch all the services defined in the docker-compose.yml file in background process (-d option)
@@ -100,7 +91,7 @@ connect to the sf4_php container
 docker exec -it -u root sf4_apache bash
 ```
 
-you can see that symfony project has been already initialized by [php entrypoint](exercise/php/entrypoint.sh)
+you can see that symfony project has been already initialized by [php entrypoint](exercise/apache/entrypoint.sh)
 
 Finally type 'exit' to return to the host
 
@@ -117,7 +108,3 @@ now remove the containers and the volumes associated (option -v)
 ```bash
 docker-compose down -v
 ```
-
-TODO simplify remove php-fpm
-TODO problem with phpmyadmin grant user
-ALTER USER 'mysqlUsername'@'localhost' IDENTIFIED WITH mysql_native_password BY 'mysqlUsernamePassword';
