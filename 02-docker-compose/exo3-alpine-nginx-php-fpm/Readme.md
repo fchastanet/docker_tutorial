@@ -51,7 +51,8 @@ loaded into that process, while only your PHP requests are
 funneled to FPM.
 Nginx configuration file format is more clear than apache configuration
 file format.
-    
+However Nginx is not recommended if you have long php process on the frontend. 
+  
 ### Why using alpine based images vs debian/ubuntu ?
 alpine based image results in smaller image's size but there are 
 some culprits to take into consideration

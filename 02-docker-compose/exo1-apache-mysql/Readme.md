@@ -38,12 +38,6 @@ Ctrl-C to go back to the bash prompt
 docker-compose logs -f
 ```
 
-inspect volume structure
-```bash
-docker volume inspect exercise_web-site-volume
-```
-you can see in the property Mountpoint the place where the files of the volume are actually stored
-
 ## initialize the symfony project
 connect to the sf4_php container
 > **Note**
@@ -63,6 +57,18 @@ chown -R www-data:www-data * .*
 ```
 
 Finally type 'exit' to return to the host
+
+## inspect the volume
+inspect volume structure
+```bash
+docker volume inspect exercise_web-site-volume
+```
+you can see in the property Mountpoint the place where the files of the volume are actually stored
+
+list the files in the volume
+```bash
+sudo ls -al "$(docker volume inspect exercise_web-site-volume | grep "Mountpoint" | sed -E 's/[ \t]+"Mountpoint": "([^"]+)",$/\1/')"
+```
 
 ## open the web sites
 Open the web site in your browser [http://localhost](http://localhost)

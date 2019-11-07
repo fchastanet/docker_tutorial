@@ -12,7 +12,7 @@ launch a MySQL container from mysql 8.0 image
 * -d option runs the container in background 
 * --default-authentication-plugin=mysql_native_password : MySQL 8 changed the password authentication method.
 ```bash
-docker run --rm --name wordpressMysql -e MYSQL_ROOT_PASSWORD=password -d mysql:8.0 --default-authentication-plugin=mysql_native_password
+docker run --name wordpressMysql -e MYSQL_ROOT_PASSWORD=password -d mysql:8.0 --default-authentication-plugin=mysql_native_password
 ```
 
 If you have netcat available on your host, you can use following script to wait 
@@ -105,6 +105,8 @@ Launch Apache container from wordpress image linked to Mysql container previousl
 docker run --rm --name wordpressApache -p 8080:80 --link wordpressMysql:mysql -d wordpress
 ```
 
+> Note: the --rm option, if the container is stopped, it will be removed in the same time
+
 See the logs of the Apache container  - type Control-C to interrupt
 
 ```bash
@@ -156,14 +158,30 @@ open wordpress [http://localhost:8080]
 > **WARNING**
 >
 > the following commands will terminate all your containers even those not related to this tutorial !!!
- 
+
 ```bash
 docker stop $(docker ps -aq)
 ```
 
+Instead you can use this command to only remove concerned containers
+```bash
+docker stop wordpressMysql wordpressApache
+```
+
+> **Note**: only the wordpressApache container will be removed because of the --rm option, so we need to remove
+> wordpressMysql container  
+
 ### remove docker containers
+> **WARNING**
+>
+> the following commands will remove all the stopped containers even those not related to this tutorial !!!
 ```bash
 docker rm $(docker ps -aq)
+```
+
+Instead you can use this command to only remove concerned containers
+```bash
+docker rm wordpressMysql
 ```
 
 ### Note : a lot of prebuilt images already exist

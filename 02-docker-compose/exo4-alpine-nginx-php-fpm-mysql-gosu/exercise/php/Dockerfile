@@ -49,5 +49,8 @@ RUN true \
     && chmod +xs /usr/local/bin/gosu \
     && chmod +x  /usr/local/bin/composer
 
+# for a strange reason php:7.3-fpm-alpine3.9 image has lost default cmd, fix it
+CMD ["php-fpm"]
+
 # Custom entrypoint
 ENTRYPOINT [ "/usr/local/bin/custom-entrypoint" ]

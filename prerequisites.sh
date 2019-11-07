@@ -1,15 +1,13 @@
 #!/usr/bin/env bash
 DOCKER_MINIMAL_VERSION="18.03"
 DOCKER_COMPOSE_MINIMAL_VERSION="1.21"
-PACKER_MINIMAL_VERSION="1.3.4"
-VAGRANT_MINIMAL_VERSION="2.2.3"
 
 # @return 1 if on windows system
 Functions::isWindows() {
     [[ "$(uname -o)" = "Msys" ]] && return 0 || return 1
 }
 
-# @return 1 if on xsl system
+# @return 1 if on wsl system
 Functions::isWsl() {
     [[ "$(uname -r)" =~ .*-Microsoft$ ]] && return 0 || return 1
 }
@@ -93,22 +91,12 @@ echo "uname : " $(uname -a)
 Version::checkMinimal "docker" "docker -v" "${DOCKER_MINIMAL_VERSION}"
 # check docker-compose version
 Version::checkMinimal "docker-compose" "docker-compose -v" "${DOCKER_COMPOSE_MINIMAL_VERSION}"
-# check packer version
-Version::checkMinimal "packer" "packer --version" "${PACKER_MINIMAL_VERSION}"
 
 if [ "$(Functions::isWindows; echo $?)" = "0" ]; then
-    # check vagrant version
-    Version::checkMinimal "vagrant" "vagrant --version" "${VAGRANT_MINIMAL_VERSION}"
-
     Functions::checkCommandExists "dos2unix" "are you using git bash ?"
     Functions::checkCommandExists "cygpath" "are you using git bash ?"
-    Functions::checkCommandExists "wsl" "you need to install wsl"
 elif [[ "$(Functions::isWsl; echo $?)" = "0" ]]; then
-    # check vagrant version
-    Version::checkMinimal "vagrant.exe" "vagrant.exe --version" "${VAGRANT_MINIMAL_VERSION}"
-else
-    # check vagrant version
-    Version::checkMinimal "vagrant" "vagrant --version" "${VAGRANT_MINIMAL_VERSION}"
+    (>&2 echo "be careful, docker only works with wsl2 but wsl2 is not supported yet with this tuto !")
 fi
 
 # pull docker images
@@ -125,8 +113,6 @@ echo "pull docker images"
 for image in "${images[@]}"; do
     docker image pull "${image}"
 done
-
-# TODO pull packer images
 
 # execute docker hello world
 if [[ "$(docker run --rm hello-world 2>/dev/null| grep "Hello from Docker!")" = "Hello from Docker!" ]]; then
