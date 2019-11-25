@@ -3,7 +3,7 @@ FROM debian:stretch
 # Install apache, PHP, and supplimentary programs. openssh-server, curl, and lynx-cur are for debugging the container.
 RUN apt-get update
 RUN apt-get -y upgrade
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php7.0 php7.0-mysql libapache2-mod-php7.0 curl lynx-cur
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php7.0 php7.0-mysql xml libapache2-mod-php7.0 curl lynx-cur
 # useful for composer
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install git zip unzip php-curl
 # useful for symfony

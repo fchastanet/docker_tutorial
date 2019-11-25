@@ -13,8 +13,8 @@ services:
     working_dir: /home/wwwroot/sf4
     environment:
       # pass .env variables to the container
-      HOST_USER_ID: ${HOST_USER_ID}
-      HOST_GROUP_ID: ${HOST_GROUP_ID}
+      HOST_USER_ID: ${HOST_USER_ID:-1000}
+      HOST_GROUP_ID: ${HOST_GROUP_ID:1000}
     networks:
       - frontend
       - backend
