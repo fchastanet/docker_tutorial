@@ -64,7 +64,7 @@ Docker exec is a commonly used CLI command that allows you to run a command with
 
 Connect to MySQL container and show databases
 ```bash
-docker exec wordpressMysql sh -c "exec mysql -uroot -ppassword -e 'SHOW DATABASES;'"
+docker exec wordpressMysql sh -c "mysql -uroot -ppassword -e 'SHOW DATABASES;'"
 ```
 
 Launch bash on mysql container (type ls command, exit to leave bash session)

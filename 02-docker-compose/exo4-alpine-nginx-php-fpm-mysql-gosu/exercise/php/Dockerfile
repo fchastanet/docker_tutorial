@@ -44,7 +44,7 @@ FROM php:7.3-fpm-alpine3.9
 COPY --from=gosuBuild /usr/local/bin/gosu /usr/local/bin/gosu
 COPY --from=composer /usr/bin/composer /usr/local/bin/composer
 
-RUN true \
+RUN set -x \
     # gosu set-user-id mode in order to allow it to be executed in high priviledged mode
     && chmod +xs /usr/local/bin/gosu \
     && chmod +x  /usr/local/bin/composer
