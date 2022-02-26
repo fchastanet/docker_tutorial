@@ -1,0 +1,35 @@
+version: '3'
+services:
+  apache:
+    build: apache
+    container_name: sf4_apache
+    ports:
+      - 80:80
+    volumes:
+      - ./apache/vhosts:/etc/apache2/sites-enabled
+      - web-site-volume:/home/wwwroot/sf4
+
+  mysql:
+    image: mysql:8.0
+    container_name: sf4_mysql
+    volumes:
+      - mysql-volume:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sf4
+      MYSQL_USER: sf4
+      MYSQL_PASSWORD: sf4
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: sf4_phpmyadmin
+    links:
+      - mysql:db
+    ports:
+      - 8080:80
+    depends_on:
+      - mysql
+
+volumes:
+  web-site-volume:
+  mysql-volume:
